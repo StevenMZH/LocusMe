@@ -29,6 +29,7 @@ jobs:
           ssh -i gce_key -o StrictHostKeyChecking=no $GCE_USER@$GCE_HOST << 'EOF'
             cd /home/smenthor12/LocusMe
             git pull origin main
+            echo "${{ secrets.ENV_DEV }}" > .env.dev
             docker compose down
             docker compose build
             docker compose up -d
