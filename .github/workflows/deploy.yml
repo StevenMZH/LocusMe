@@ -27,7 +27,7 @@ jobs:
           GCE_HOST: ${{ secrets.GCE_HOST }}
         run: |
           ssh -i gce_key -o StrictHostKeyChecking=no $GCE_USER@$GCE_HOST << 'EOF'
-            cd /home/smenthor12
+            cd /home/smenthor12/LocusMe
             git pull origin main
             docker compose down
             docker compose build
