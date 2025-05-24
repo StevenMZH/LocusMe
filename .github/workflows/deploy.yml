@@ -18,13 +18,18 @@ jobs:
           echo "${{ secrets.GCE_SSH_PRIVATE_KEY }}" > gce_key
           chmod 600 gce_key
 
+      - name: Install SSH client (por si no está)
+        run: sudo apt-get update && sudo apt-get install -y openssh-client
+
       - name: Access Server via SSH and deploy
+        env:
+          GCE_USER: ${{ secrets.GCE_USER }}
+          GCE_HOST: ${{ secrets.GCE_HOST }}
         run: |
-          ssh -i gce_key -o StrictHostKeyChecking=no ${{ secrets.GCE_USER }}@${{ secrets.GCE_HOST }} << 'EOF'
-            cd /ruta/de/tu/app
+          ssh -i gce_key -o StrictHostKeyChecking=no $GCE_USER@$GCE_HOST << 'EOF'
+            cd /home/smenthor12
             git pull origin main
             docker-compose down
             docker-compose build
             docker-compose up -d
           EOF
-
