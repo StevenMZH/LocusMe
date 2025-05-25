@@ -1,0 +1,36 @@
+name: Deploy to GCE
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: Deploy to Google Compute Engine
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Add SSH key
+        run: |
+          echo "${{ secrets.GCE_SSH_PRIVATE_KEY }}" > gce_key
+          chmod 600 gce_key
+
+      - name: Install SSH client (por si no está)
+        run: sudo apt-get update && sudo apt-get install -y openssh-client
+
+      - name: Access Server via SSH and deploy
+        env:
+          GCE_USER: ${{ secrets.GCE_USER }}
+          GCE_HOST: ${{ secrets.GCE_HOST }}
+        run: |
+          ssh -i gce_key -o StrictHostKeyChecking=no $GCE_USER@$GCE_HOST << 'EOF'
+            cd /home/$GCE_USER/LocusMe
+            git pull origin main
+            echo "${{ secrets.ENV_DEV }}" > .env.dev
+            docker compose down
+            docker compose build
+            docker compose up -d
+          EOF
