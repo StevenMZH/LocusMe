@@ -15,9 +15,9 @@ ENV/
 .idea/
 *.swp
 
-# Archivos de entorno
-.env
-*.env
+# # Archivos de entorno
+# .env
+# *.env
 
 # Archivos de log y temporales
 *.log
